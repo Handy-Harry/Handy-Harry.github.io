@@ -40,7 +40,7 @@
                     for (var i = 1; i < rows.length; i++) { // Begin bij 1 om de koptekst over te slaan
                         var columns = rows[i].split(',');
                         if (columns[0] === maatschappij) {
-                            expertisekosten = berekenExpertisekostenVolgensTarieven(columns, vergoeding);
+                            expertisekosten = berekenExpertisekostenVolgensTarieven(columns.slice(1), vergoeding); // Slice om het maatschappijnaam te verwijderen
                             if (expertisekosten) {
                                 document.getElementById("resultaat").innerText = "Expertisekosten bij " + maatschappij + ": " + expertisekosten.toFixed(2) + " Euro";
                             } else {
@@ -59,32 +59,18 @@
 
         function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
             try {
-                // Controleer of de tarieven array de juiste lengte heeft
-                if (tarieven.length !== 7) {
-                    console.error('Ongeldige tarieven:', tarieven);
-                    return null;
-                }
+                var expertisekosten = parseFloat(tarieven[0]); // Begin met het minimum expertisekosten
 
-                var minimum = parseFloat(tarieven[1]); // Minimum expertisekosten
-                var threshold1 = parseInt(tarieven[2]);
-                var rate1 = parseFloat(tarieven[3]);
-                var threshold2 = parseInt(tarieven[4]);
-                var rate2 = parseFloat(tarieven[5]);
-                var rate3 = parseFloat(tarieven[6]);
+                // Loop door de rest van de tarieven en thresholds en bereken de expertisekosten
+                for (var i = 1; i < tarieven.length; i += 2) {
+                    var threshold = parseFloat(tarieven[i]);
+                    var rate = parseFloat(tarieven[i + 1]);
 
-                var expertisekosten;
-
-                if (vergoeding <= threshold1) {
-                    expertisekosten = (vergoeding * rate1);
-                } else if (vergoeding <= threshold2) {
-                    expertisekosten = (threshold1 * rate1 + (vergoeding - threshold1) * rate2);
-                } else {
-                    expertisekosten = (threshold1 * rate1 + (threshold2 - threshold1) * rate2 + (vergoeding - threshold2) * rate3);
-                }
-
-                // Toepassen van het minimum expertisekosten
-                if (expertisekosten < minimum) {
-                    expertisekosten = minimum;
+                    if (vergoeding > threshold) {
+                        expertisekosten += (vergoeding - threshold) * rate;
+                    } else {
+                        break; // Stop de loop als de vergoeding lager is dan de huidige drempel
+                    }
                 }
 
                 return expertisekosten;
