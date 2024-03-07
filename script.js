@@ -29,6 +29,7 @@ function berekenExpertisekosten() {
       });
 }
 
+// Functie om de expertisekosten te berekenen volgens de tarieven
 function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
   try {
       var minimum = parseFloat(tarieven[0]); // Minimum expertisekosten
