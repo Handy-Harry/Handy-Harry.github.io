@@ -59,10 +59,12 @@
 
         function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
             try {
-                var expertisekosten = parseFloat(tarieven[0]); // Begin met het minimum expertisekosten
+                var minimum = parseFloat(tarieven[0]); // Minimum expertisekosten
+                var maximum = parseFloat(tarieven[1]); // Maximum expertisekosten
+                var expertisekosten = minimum;
 
                 // Loop door de rest van de tarieven en thresholds en bereken de expertisekosten
-                for (var i = 1; i < tarieven.length; i += 2) {
+                for (var i = 2; i < tarieven.length; i += 2) {
                     var threshold = parseFloat(tarieven[i]);
                     var rate = parseFloat(tarieven[i + 1]);
 
@@ -71,6 +73,11 @@
                     } else {
                         break; // Stop de loop als de vergoeding lager is dan de huidige drempel
                     }
+                }
+
+                // Toepassen van het maximum expertisekosten
+                if (expertisekosten > maximum) {
+                    expertisekosten = maximum;
                 }
 
                 return expertisekosten;
