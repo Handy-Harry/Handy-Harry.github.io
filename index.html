@@ -28,45 +28,62 @@
     <script>
         // Functie om expertisekosten te berekenen
         function berekenExpertisekosten() {
-            var maatschappij = document.getElementById("verzekeringsmaatschappij").value;
-            var vergoeding = parseFloat(document.getElementById("vergoeding").value);
+    var maatschappij = document.getElementById("verzekeringsmaatschappij").value;
+    var vergoeding = parseFloat(document.getElementById("vergoeding").value);
 
-            // Haal de expertisekosten op uit het CSV-bestand voor de geselecteerde maatschappij
-            fetch('verzekeringsmaatschappijen.csv')
-                .then(response => response.text())
-                .then(data => {
-                    // Verwerk de CSV-gegevens
-                    var rows = data.split('\n');
-                    var expertisekosten;
-                    for (var i = 1; i < rows.length; i++) { // Begin bij 1 om de koptekst over te slaan
-                        var columns = rows[i].split(',');
-                        if (columns[0] === maatschappij) {
-                            expertisekosten = berekenExpertisekostenVolgensTarieven(columns, vergoeding);
-                            break;
-                        }
-                    }
+    // Haal de expertisekosten op uit het CSV-bestand voor de geselecteerde maatschappij
+    fetch('verzekeringsmaatschappijen.csv')
+        .then(response => response.text())
+        .then(data => {
+            // Verwerk de CSV-gegevens
+            var rows = data.split('\n');
+            var expertisekosten;
+            for (var i = 1; i < rows.length; i++) { // Begin bij 1 om de koptekst over te slaan
+                var columns = rows[i].split(',');
+                if (columns[0] === maatschappij) {
+                    expertisekosten = berekenExpertisekostenVolgensTarieven(columns, vergoeding);
                     if (expertisekosten) {
                         document.getElementById("resultaat").innerText = "Expertisekosten bij " + maatschappij + ": " + expertisekosten.toFixed(2) + " Euro";
                     } else {
-                        document.getElementById("resultaat").innerText = "Tarieven voor deze maatschappij niet gevonden.";
+                        document.getElementById("resultaat").innerText = "Fout bij het berekenen van de expertisekosten.";
                     }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById("resultaat").innerText = "Er is een fout opgetreden bij het verwerken van het CSV-bestand.";
-                });
+                    return;
+                }
+            }
+            document.getElementById("resultaat").innerText = "Tarieven voor deze maatschappij niet gevonden.";
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById("resultaat").innerText = "Er is een fout opgetreden bij het verwerken van het CSV-bestand.";
+        });
+}
+
+function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
+    try {
+        // Controleer of de tarieven array de juiste lengte heeft
+        if (tarieven.length !== 6) {
+            console.error('Ongeldige tarieven:', tarieven);
+            return null;
         }
 
-        // Functie om expertisekosten te berekenen volgens tarieven uit het CSV-bestand
-        function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
-            if (vergoeding <= parseInt(tarieven[1])) {
-                return (vergoeding * parseFloat(tarieven[2])).toFixed(2);
-            } else if (vergoeding <= parseInt(tarieven[3])) {
-                return (parseInt(tarieven[1]) * parseFloat(tarieven[2]) + (vergoeding - parseInt(tarieven[1])) * parseFloat(tarieven[4])).toFixed(2);
-            } else {
-                return (parseInt(tarieven[1]) * parseFloat(tarieven[2]) + (parseInt(tarieven[3]) - parseInt(tarieven[1])) * parseFloat(tarieven[4]) + (vergoeding - parseInt(tarieven[3])) * parseFloat(tarieven[5])).toFixed(2);
-            }
+        var threshold1 = parseInt(tarieven[1]);
+        var rate1 = parseFloat(tarieven[2]);
+        var threshold2 = parseInt(tarieven[3]);
+        var rate2 = parseFloat(tarieven[4]);
+        var rate3 = parseFloat(tarieven[5]);
+
+        if (vergoeding <= threshold1) {
+            return (vergoeding * rate1);
+        } else if (vergoeding <= threshold2) {
+            return (threshold1 * rate1 + (vergoeding - threshold1) * rate2);
+        } else {
+            return (threshold1 * rate1 + (threshold2 - threshold1) * rate2 + (vergoeding - threshold2) * rate3);
         }
+    } catch (error) {
+        console.error('Fout bij het berekenen van expertisekosten:', error);
+        return null;
+    }
+}
     </script>
 
 </body>
