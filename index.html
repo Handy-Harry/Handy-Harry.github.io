@@ -27,7 +27,7 @@
         fetch('verzekeringsmaatschappijen.csv')
             .then(response => response.text())
             .then(data => {
-                var companies = data.trim().split('\n').map(row => row.split(',')[1]); // Extracteer de maatschappijnamen
+                var companies = data.trim().split('\n').map(row => row.split(',')[0]); // Extracteer de maatschappijnamen
                 var options = companies.map(company => `<option value="${company}">${company}</option>`);
                 document.getElementById('verzekeringsmaatschappij').innerHTML = options.join('');
             })
