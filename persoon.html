@@ -66,7 +66,40 @@
     </div>
 
     <script>
-        // JavaScript code remains the same
+        // Function to fetch CSV data
+        function fetchCSV(url) {
+            return fetch(url)
+                .then(response => response.text());
+        }
+
+        // Function to parse CSV data
+        function parseCSV(csvData) {
+            const lines = csvData.split('\n');
+            const data = [];
+            for (let i = 1; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (line !== '') {
+                    const parts = line.split(',');
+                    data.push({
+                        name: parts[0],
+                        email: parts[1],
+                        phone: parts[2]
+                    });
+                }
+            }
+            return data;
+        }
+
+        // Function to render data into table
+        function renderData(data) {
+            const tableBody = document.querySelector('#csv_table tbody');
+            data.forEach(entry => {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${entry.name}</td><td>${entry.email}</td><td>${entry.phone}</td>`;
+                tableBody.appendChild(row);
+            });
+        }
+
         // Fetch CSV data and render it
         fetchCSV('data.csv')
             .then(parseCSV)
