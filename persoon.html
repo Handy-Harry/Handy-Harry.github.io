@@ -1,29 +1,19 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Persoonlijke informatie</title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="script.js"></script>
-<style>
-  /* Voeg hier eventuele CSS-stijlen toe */
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personen</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<select id="personen">
-  <option value="naam1">Naam 1</option>
-  <option value="naam2">Naam 2</option>
-  <!-- Voeg hier meer opties toe voor elke persoon in de klas -->
-</select>
-
-<input type="text" id="zoekNaam" placeholder="Naam">
-<button id="zoek">Zoek</button>
-
-<div id="persoonInfo">
-  <!-- Hier wordt de informatie van de geselecteerde persoon weergegeven -->
-</div>
-
+  <h1>Personen</h1>
+  <form id="personForm">
+    <input type="text" id="nameInput" placeholder="Naam" required>
+    <input type="number" id="ageInput" placeholder="Leeftijd" required>
+    <button type="submit">Toevoegen</button>
+  </form>
+  <ul id="personList"></ul>
+  <script src="script.js"></script>
 </body>
 </html>
