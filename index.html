@@ -23,11 +23,12 @@
 
     <script src="script.js"></script>
     <script>
-        // Haal de verzekeringsmaatschappijen op uit het CSV-bestand
+        // Haal de verzekeringsmaatschappijen op uit het CSV-bestand en laad ze in het pulldown-menu
         fetch('verzekeringsmaatschappijen.csv')
             .then(response => response.text())
             .then(data => {
-                var options = data.trim().split('\n').map(option => `<option value="${option}">${option}</option>`);
+                var companies = data.trim().split('\n').map(row => row.split(',')[0]); // Extracteer de maatschappijnamen
+                var options = companies.map(company => `<option value="${company}">${company}</option>`);
                 document.getElementById('verzekeringsmaatschappij').innerHTML = options.join('');
             })
             .catch(error => console.error('Error:', error));
