@@ -4,85 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expertisekosten Calculator</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-
-        h1 {
-            color: #333333;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 10px;
-            color: #333333;
-        }
-
-        input[type="number"], select {
-            width: calc(100% - 22px); /* 22px accounts for the padding and border */
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #cccccc;
-            border-radius: 4px;
-            box-sizing: border-box; /* Include padding and border in the width */
-        }
-
-        input[type="number"], select:focus {
-            outline: none;
-            border-color: #007bff;
-        }
-
-        input[type="text"]::-webkit-inner-spin-button,
-        input[type="text"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
-        button {
-            background-color: #007bff;
-            color: #ffffff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            display: block;
-            margin-top: 10px;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        #resultaat {
-            color: #333333;
-            font-size: 18px;
-            text-align: center;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
 
-    <div class="container">
+    <div>
         <h1>Expertisekosten Calculator</h1>
 
         <label for="verzekeringsmaatschappij">Verzekeringsmaatschappij:</label>
@@ -101,41 +26,48 @@
     </div>
 
     <script>
+        // Functie om expertisekosten te berekenen
         function berekenExpertisekosten() {
             var maatschappij = document.getElementById("verzekeringsmaatschappij").value;
             var vergoeding = parseFloat(document.getElementById("vergoeding").value);
 
-            var expertisekosten;
+            // Haal de expertisekosten op uit het CSV-bestand voor de geselecteerde maatschappij
+            fetch('verzekeringsmaatschappijen.csv')
+                .then(response => response.text())
+                .then(data => {
+                    // Verwerk de CSV-gegevens
+                    var rows = data.split('\n');
+                    var expertisekosten;
+                    for (var i = 1; i < rows.length; i++) { // Begin bij 1 om de koptekst over te slaan
+                        var columns = rows[i].split(',');
+                        if (columns[0] === maatschappij) {
+                            expertisekosten = berekenExpertisekostenVolgensTarieven(columns, vergoeding);
+                            break;
+                        }
+                    }
+                    if (expertisekosten) {
+                        document.getElementById("resultaat").innerText = "Expertisekosten bij " + maatschappij + ": " + expertisekosten.toFixed(2) + " Euro";
+                    } else {
+                        document.getElementById("resultaat").innerText = "Tarieven voor deze maatschappij niet gevonden.";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById("resultaat").innerText = "Er is een fout opgetreden bij het verwerken van het CSV-bestand.";
+                });
+        }
 
-            // Bereken expertisekosten volgens het barema van de geselecteerde verzekeringsmaatschappij
-            switch (maatschappij) {
-                case "AG Insurance":
-                    if (vergoeding <= 18000) {
-                        expertisekosten = vergoeding * 0.05;
-                    } else if (vergoeding <= 180000) {
-                        expertisekosten = 18000 * 0.05 + (vergoeding - 18000) * 0.02;
-                    } else {
-                        expertisekosten = 18000 * 0.05 + (180000 - 18000) * 0.02 + (vergoeding - 180000) * 0.015;
-                    }
-                    break;
-                case "Ethias":
-                    if (vergoeding <= 7500) {
-                        expertisekosten = vergoeding * 0.05;
-                    } else if (vergoeding <= 50000) {
-                        expertisekosten = 7500 * 0.05 + (vergoeding - 7500) * 0.02;
-                    } else {
-                        expertisekosten = 7500 * 0.05 + (50000 - 7500) * 0.02 + (vergoeding - 50000) * 0.015;
-                    }
-                    break;
-                // Voeg hier cases toe voor andere verzekeringsmaatschappijen
-                default:
-                    expertisekosten = 0;
+        // Functie om expertisekosten te berekenen volgens tarieven uit het CSV-bestand
+        function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
+            if (vergoeding <= parseInt(tarieven[1])) {
+                return (vergoeding * parseFloat(tarieven[2])).toFixed(2);
+            } else if (vergoeding <= parseInt(tarieven[3])) {
+                return (parseInt(tarieven[1]) * parseFloat(tarieven[2]) + (vergoeding - parseInt(tarieven[1])) * parseFloat(tarieven[4])).toFixed(2);
+            } else {
+                return (parseInt(tarieven[1]) * parseFloat(tarieven[2]) + (parseInt(tarieven[3]) - parseInt(tarieven[1])) * parseFloat(tarieven[4]) + (vergoeding - parseInt(tarieven[3])) * parseFloat(tarieven[5])).toFixed(2);
             }
-
-            document.getElementById("resultaat").innerHTML = "Expertisekosten bij " + maatschappij + ": " + expertisekosten.toFixed(2) + " Euro";
         }
     </script>
 
 </body>
 </html>
-
