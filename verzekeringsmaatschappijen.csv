@@ -1,3 +1,3 @@
-Maatschappij,Threshold1,Rate1,Threshold2,Rate2,Rate3
-AG Insurance,18000,0.05,180000,0.02,0.015
-Ethias,7500,0.05,50000,0.02,0.015
+Maatschappij,Minimum,Threshold1,Rate1,Threshold2,Rate2,Rate3
+AG Insurance,50,18000,0.05,180000,0.02,0.015
+Ethias,60,7500,0.05,50000,0.02,0.015
