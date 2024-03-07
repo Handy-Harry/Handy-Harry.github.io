@@ -1,5 +1,3 @@
-// script.js
-
 $(document).ready(function(){
     var personen = {
       "Naam 1": { geslacht: "Man", lengte: "180cm", haarkleur: "Bruin" },
@@ -8,6 +6,8 @@ $(document).ready(function(){
     };
     var select = $('#personen');
     var persoonInfo = $('#persoonInfo');
+    var zoekKnop = $('#zoek');
+    var zoekInput = $('#zoekNaam');
   
     // Wanneer een persoon wordt geselecteerd, update de informatie
     select.change(function(){
@@ -17,6 +17,16 @@ $(document).ready(function(){
                            '<p>Lengte: ' + gekozenPersoon.lengte + '</p>' +
                            '<p>Haarkleur: ' + gekozenPersoon.haarkleur + '</p>';
       persoonInfo.html(informatieHTML);
+    });
+  
+    // Wanneer op de zoekknop wordt geklikt, zoek naar de ingevoerde naam
+    zoekKnop.click(function() {
+      var zoekNaam = zoekInput.val();
+      if (personen.hasOwnProperty(zoekNaam)) {
+        select.val(zoekNaam).change();
+      } else {
+        alert("Persoon niet gevonden.");
+      }
     });
   });
   
