@@ -6,14 +6,12 @@ function berekenExpertisekostenVolgensTarieven(tarieven, schadevergoeding) {
       var expertisekosten = Math.min(Math.max(minimum, schadevergoeding * parseFloat(tarieven[3])), maximum); // Initieer expertisekosten met minimum of 5% van schadevergoeding en zet op maximum als nodig
 
       // Loop door de thresholds en rates en pas tarieven toe op het verschil tussen thresholds
-      for (var i = 3; i < tarieven.length; i += 2) {
+      for (var i = 4; i < tarieven.length; i += 2) {
           var threshold = parseFloat(tarieven[i]);
           var rate = parseFloat(tarieven[i + 1]);
 
           if (schadevergoeding > threshold) {
               expertisekosten += (schadevergoeding - threshold) * rate; // Voeg toe aan expertisekosten het verschil tussen schadevergoeding en threshold vermenigvuldigd met rate
-          } else {
-              break; // Stop de loop als de schadevergoeding lager is dan de huidige drempel
           }
       }
 
@@ -22,6 +20,38 @@ function berekenExpertisekostenVolgensTarieven(tarieven, schadevergoeding) {
       console.error('Fout bij het berekenen van expertisekosten:', error);
       return null;
   }
+}
+
+// Functie om de expertisekosten te berekenen
+function berekenExpertisekosten() {
+  var maatschappij = document.getElementById("verzekeringsmaatschappij").value;
+  var schadevergoeding = parseFloat(document.getElementById("schadevergoeding").value);
+
+  // Haal de expertisekosten op uit het CSV-bestand voor de geselecteerde maatschappij
+  fetch('verzekeringsmaatschappijen.csv')
+      .then(response => response.text())
+      .then(data => {
+          // Verwerk de CSV-gegevens
+          var rows = data.split('\n');
+          var expertisekosten;
+          for (var i = 1; i < rows.length; i++) { // Begin bij 1 om de koptekst over te slaan
+              var columns = rows[i].split(',');
+              if (columns[0] === maatschappij) {
+                  expertisekosten = berekenExpertisekostenVolgensTarieven(columns.slice(1), schadevergoeding); // Slice om het maatschappijnaam te verwijderen
+                  if (expertisekosten) {
+                      document.getElementById("resultaat").innerText = "Expertisekosten bij " + maatschappij + ": " + expertisekosten.toFixed(2) + " Euro";
+                  } else {
+                      document.getElementById("resultaat").innerText = "Fout bij het berekenen van de expertisekosten.";
+                  }
+                  return;
+              }
+          }
+          document.getElementById("resultaat").innerText = "Tarieven voor deze maatschappij niet gevonden.";
+      })
+      .catch(error => {
+          console.error('Error:', error);
+          document.getElementById("resultaat").innerText = "Er is een fout opgetreden bij het verwerken van het CSV-bestand.";
+      });
 }
 
 // Haal de maatschappijnamen op uit het CSV-bestand en laad ze in het pulldown-menu
