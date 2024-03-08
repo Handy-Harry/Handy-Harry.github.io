@@ -4,23 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expertisekosten Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        p {
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
 
-    <div>
-        <h1>Expertisekosten Calculator</h1>
+<div class="container">
+    <h1>Expertisekosten Calculator</h1>
 
-        <label for="verzekeringsmaatschappij">Verzekeringsmaatschappij:</label>
-        <select id="verzekeringsmaatschappij"></select>
+    <label for="verzekeringsmaatschappij">Verzekeringsmaatschappij:</label>
+    <select id="verzekeringsmaatschappij"></select>
 
-        <label for="schadevergoeding">Bedrag van de schadevergoeding:</label>
-        <input type="text" id="schadevergoeding" placeholder="Bedrag in Euro" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
+    <label for="schadevergoeding">Bedrag van de schadevergoeding:</label>
+    <input type="text" id="schadevergoeding" placeholder="Bedrag in Euro" oninput="this.value = this.value.replace(/[^0-9.]/g, '');">
 
-        <button onclick="berekenExpertisekosten()">Bereken Expertisekosten</button>
+    <button onclick="berekenExpertisekosten()">Bereken Expertisekosten</button>
 
-        <p id="resultaat"></p>
-    </div>
+    <p id="resultaat"></p>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
