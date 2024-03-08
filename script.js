@@ -65,6 +65,11 @@ fetch('verzekeringsmaatschappijen.csv')
   })
   .catch(error => console.error('Error:', error));
 
+// Functie om de expertisekosten te berekenen
+function berekenExpertisekosten() {
+  var maatschappij = document.getElementById("verzekeringsmaatschappij").value;
+  var schadevergoeding = parseFloat(document.getElementById("schadevergoeding").value);
+
   // Haal de expertisekosten op uit het CSV-bestand voor de geselecteerde maatschappij
   fetch('verzekeringsmaatschappijen.csv')
       .then(response => response.text())
