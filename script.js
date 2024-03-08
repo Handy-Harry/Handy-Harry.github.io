@@ -3,9 +3,19 @@ function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
     try {
         var minimum = parseFloat(tarieven[0]); // Minimum expertisekosten
         var expertisekosten = minimum;
+        var threshold1 = parseFloat(tarieven[1]); // Eerste drempel
+        var rate1 = parseFloat(tarieven[2]); // Eerste tarief
+
+        // Eerste tarief toepassen op het deel tot threshold1
+        if (vergoeding > threshold1) {
+            expertisekosten += (threshold1 * rate1);
+        } else {
+            expertisekosten += (vergoeding * rate1);
+            return expertisekosten;
+        }
 
         // Loop door de rest van de tarieven en thresholds en bereken de expertisekosten
-        for (var i = 1; i < tarieven.length; i += 2) {
+        for (var i = 3; i < tarieven.length; i += 2) {
             var threshold = parseFloat(tarieven[i]);
             var rate = parseFloat(tarieven[i + 1]);
 
@@ -22,6 +32,7 @@ function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
         return null;
     }
 }
+
 
 
 // Haal de maatschappijnamen op uit het CSV-bestand en laad ze in het pulldown-menu
