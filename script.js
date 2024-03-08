@@ -24,7 +24,6 @@ function berekenExpertisekostenVolgensTarieven(tarieven, schadevergoeding) {
   }
 }
 
-
 // Haal de maatschappijnamen op uit het CSV-bestand en laad ze in het pulldown-menu
 fetch('verzekeringsmaatschappijen.csv')
   .then(response => response.text())
