@@ -2,22 +2,23 @@
 function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
   try {
       var minimum = parseFloat(tarieven[0]); // Minimum expertisekosten
+      var maximum = parseFloat(tarieven[1]); // Maximum expertisekosten
       var expertisekosten = minimum;
 
       // De eerste drempel en het bijbehorende tarief
-      var threshold1 = parseFloat(tarieven[1]);
-      var rate1 = parseFloat(tarieven[2]);
+      var threshold1 = parseFloat(tarieven[2]);
+      var rate1 = parseFloat(tarieven[3]);
 
       // Bereken de kosten voor het bedrag tot aan de eerste drempel
       if (vergoeding > threshold1) {
           expertisekosten += (threshold1 - 0) * rate1; // Kosten tot de eerste drempel
       } else {
           expertisekosten += (vergoeding - 0) * rate1; // Kosten voor volledige vergoeding
-          return expertisekosten;
+          return Math.min(expertisekosten, maximum); // Gebruik het minimum van berekende kosten en maximum
       }
 
       // Loop door de rest van de tarieven en thresholds en bereken de expertisekosten
-      for (var i = 3; i < tarieven.length; i += 2) {
+      for (var i = 4; i < tarieven.length; i += 2) {
           var threshold = parseFloat(tarieven[i]);
           var rate = parseFloat(tarieven[i + 1]);
 
@@ -28,7 +29,7 @@ function berekenExpertisekostenVolgensTarieven(tarieven, vergoeding) {
           }
       }
 
-      return expertisekosten;
+      return Math.min(expertisekosten, maximum); // Gebruik het minimum van berekende kosten en maximum
   } catch (error) {
       console.error('Fout bij het berekenen van expertisekosten:', error);
       return null;
